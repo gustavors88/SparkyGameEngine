@@ -14,6 +14,10 @@ int main() {
 
 	while (!window.closed()) {
 		window.clear();
+		if (window.isKeyPressed(GLFW_KEY_A)) {
+			std::cout << "PRESSED!" << std::endl;
+		}
+
 #if 1
 		glBegin(GL_QUADS);
 		glVertex2d(-0.5f, -0.5f);

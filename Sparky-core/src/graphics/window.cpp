@@ -3,7 +3,13 @@
 
 namespace sparky {	namespace graphics {
 	
-	void windowResize(GLFWwindow *window, int width, int height);
+	void window_resize(GLFWwindow *window, int width, int height);
+	void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+
+	 bool Window::m_Keys[MAX_KEYS];
+	 bool Window::m_MouseButtons[MAX_KEYS];
+	 double  Window::mx;
+	 double  Window::my;
 
 	Window::Window(const char *title, int width, int height) {
 		m_Title = title;
@@ -13,16 +19,19 @@ namespace sparky {	namespace graphics {
 			glfwTerminate();
 		}
 		
+		for (int i = 0; i < MAX_KEYS; i++) {
+			m_Keys[i] = false;
+		}
+
+		for (int i = 0; i < MAX_BUTTONS; i++) {
+			m_MouseButtons[i] = false;
+		}
+	
 	}
 
 	Window::~Window() {
 		glfwTerminate();
 	};
-
-
-	void Window::clear() const {
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	}
 
 	bool Window::init() {
 
@@ -42,8 +51,9 @@ namespace sparky {	namespace graphics {
 	
 
 		glfwMakeContextCurrent(m_Window);
-		glfwSetWindowSizeCallback(m_Window, windowResize);
-
+		glfwSetWindowUserPointer(m_Window, this);
+		glfwSetWindowSizeCallback(m_Window, window_resize);
+		glfwSetKeyCallback(m_Window, key_callback);
 		if (glewInit() != GLEW_OK) {
 			std::cout << "Could not initialize GLEW!" << std::endl;
 			return false;
@@ -52,6 +62,18 @@ namespace sparky {	namespace graphics {
 		std::cout << "OpenGL " << glGetString(GL_VERSION) << std::endl;
 
 		return true;
+	}
+
+	void Window::clear() const {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
+
+	bool Window::isKeyPressed(unsigned int keycode) {
+		// TODO: Log this!
+		if (keycode >= MAX_KEYS)
+			return false;
+
+		return m_Keys[keycode];
 	}
 
 	void Window::update() {
@@ -65,8 +87,12 @@ namespace sparky {	namespace graphics {
 	}
 
 
-	void windowResize(GLFWwindow *window, int width, int height) {
+	void window_resize(GLFWwindow *window, int width, int height) {
 		glViewport(0, 0, width, height);
 	}
 
+	void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+		Window* win = (Window*)glfwGetWindowUserPointer(window);
+		win->m_Keys[key] = action != GLFW_RELEASE;
+	}
 }}
