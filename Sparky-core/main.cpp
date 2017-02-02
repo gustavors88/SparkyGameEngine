@@ -14,9 +14,9 @@ int main() {
 
 	while (!window.closed()) {
 		window.clear();
-		if (window.isKeyPressed(GLFW_KEY_A)) {
-			std::cout << "PRESSED!" << std::endl;
-		}
+		double x, y;
+		window.getMousePosition(x, y);
+		std::cout << x << ", " << y << std::endl;
 
 #if 1
 		glBegin(GL_QUADS);
