@@ -1,13 +1,19 @@
 #pragma once
 
 #include "vec3.h"
+#include "vec4.h"
 #include "maths_func.h"
 
 namespace sparky { namespace maths {
 
 	struct mat4 {
 
-		float elements[4 * 4];
+		// 2 different ways to address the same memory space
+		union
+		{
+			float elements[4 * 4];
+			vec4 columns[4];
+		};
 
 		mat4();
 		mat4(float diagonal);

@@ -15,6 +15,13 @@ int main() {
 
 	mat4 position = mat4::translation(vec3(2, 3, 4));
 	position *= mat4::identity();
+	
+	position.elements[12] = 4.0f;
+
+	vec4& column = position.columns[3];
+	std::cout << &position.columns[3].x << std::endl;
+	std::cout << &position.elements[12] << std::endl;
+
 
 	while (!window.closed()) {
 		window.clear();
